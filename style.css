@@ -8,6 +8,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 h1 {
@@ -23,8 +25,8 @@ table {
 }
 
 td {
-    width: 104px;
-    height: 104px;
+    width: 106px;
+    height: 106px;
     padding: 0;
     border: 3px solid lightgray;
     text-align: center;
