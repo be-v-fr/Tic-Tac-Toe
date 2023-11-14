@@ -1,0 +1,24 @@
+table {
+    border-collapse: collapse;
+    border: none;
+    /* Äußerer Rahmen der Tabelle */
+}
+
+td {
+    width: 104px;
+    /* Breite jeder Zelle */
+    height: 104px;
+    /* Höhe jeder Zelle */
+    padding: 0;
+    border: 3px solid lightgray;
+    /* Zellenränder */
+    text-align: center;
+    /* Zentriere den Inhalt horizontal */
+    vertical-align: middle;
+    /* Zentriere den Inhalt vertikal */
+}
+
+svg {
+    display: inline-block;
+    /* Damit das SVG horizontal zentriert wird */
+}
