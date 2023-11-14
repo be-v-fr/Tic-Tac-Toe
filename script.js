@@ -56,12 +56,88 @@ function playMove(rowIndex, columnIndex) {
   if (!cell.innerHTML) { // falls Feld frei
     fields[rowIndex][columnIndex] = activePlayerSymbol;
     updateCell(rowIndex, columnIndex);
-    // Gewinnbedingung prüfen
+    if (checkWinner()) {
+      alert(`Spieler ${activePlayerSymbol} hat gewonnen!`);
+      // Hier kannst du weitere Aktionen nach dem Gewinn durchführen
+      // z.B. das Spiel zurücksetzen oder eine neue Runde starten
+    } else {
+      if(checkGameOver()) {
+        alert('Game over!');
+      };
+    }
     togglePlayer();
     // Player-Anzeige updaten
   } else { // falls Feld belegt
     alert('Feld bereits belegt!');
   }
+}
+
+function checkWinner() {
+  if (
+    checkWinnerHorizontal() ||
+    checkWinnerVertical() ||
+    checkWinnerDiagonal()
+  ) {
+    return true;
+  } else {
+    return false; // Kein Gewinner gefunden
+  }
+}
+
+function checkWinnerHorizontal() {
+  // Überprüfe horizontale Reihen
+  for (let i = 0; i < 3; i++) {
+    if (
+      fields[0][i] !== null &&
+      fields[i][0] === fields[i][1] &&
+      fields[i][1] === fields[i][2]
+    ) {
+      return true; // Gewinner gefunden
+    }
+  }
+}
+
+function checkWinnerVertical() {
+  // Überprüfe vertikale Reihen
+  for (let i = 0; i < 3; i++) {
+    if (
+      fields[0][i] !== null &&
+      fields[0][i] === fields[1][i] &&
+      fields[1][i] === fields[2][i]
+    ) {
+      return true; // Gewinner gefunden
+    }
+  }
+}
+
+function checkWinnerDiagonal() {
+  // Überprüfe diagonale Reihen
+  if (
+    fields[0][0] !== null &&
+    fields[0][0] === fields[1][1] &&
+    fields[1][1] === fields[2][2]
+  ) {
+    return true; // Gewinner gefunden
+  }
+
+  if (
+    fields[0][2] !== null &&
+    fields[0][2] === fields[1][1] &&
+    fields[1][1] === fields[2][0]
+  ) {
+    return true; // Gewinner gefunden
+  }
+}
+
+function checkGameOver() {
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (fields[i][j] === null) {
+        return false; // Es gibt mindestens eine leere Stelle im Array
+      }
+    }
+  }
+  return true; // Alle Stellen im Array sind belegt
 }
 
 function togglePlayer() {
