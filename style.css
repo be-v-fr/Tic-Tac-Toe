@@ -1,24 +1,50 @@
+body {
+    margin: 0;
+    background: #323232;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+
 table {
     border-collapse: collapse;
     border: none;
-    /* Äußerer Rahmen der Tabelle */
 }
 
 td {
     width: 104px;
-    /* Breite jeder Zelle */
     height: 104px;
-    /* Höhe jeder Zelle */
     padding: 0;
     border: 3px solid lightgray;
-    /* Zellenränder */
     text-align: center;
-    /* Zentriere den Inhalt horizontal */
     vertical-align: middle;
-    /* Zentriere den Inhalt vertikal */
+}
+
+td:first-child {
+    border-left: none;
+}
+
+td:last-child {
+    border-right: none;
+}
+
+tr:first-child td {
+    border-top: none;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 svg {
     display: inline-block;
-    /* Damit das SVG horizontal zentriert wird */
 }
