@@ -1,10 +1,22 @@
 let fields = [
-  [null, null, 'circle'],
-  [null, 'circle', 'cross'],
-  [null, null, null]
+  [],
+  [],
+  []
 ];
 
-let activePlayerSymbol = 'circle';
+let activePlayerSymbol = '';
+
+function init() {
+  document.removeEventListener('mousedown', init);
+  fields = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null]
+  ];
+  activePlayerSymbol = 'circle';
+  render();
+  highlightPlayerSymbol();
+}
 
 function render() {
   renderPlayerSymbols();
@@ -56,33 +68,31 @@ function playMove(rowIndex, columnIndex) {
   if (!cell.innerHTML) { // falls Feld frei
     fields[rowIndex][columnIndex] = activePlayerSymbol;
     updateCell(rowIndex, columnIndex);
-    if (!checkWinner()) {
-      checkGameOver();
+    if (checkWinner() || checkGameOver()) {
+      document.addEventListener('mousedown', init);
+      drawWinLine(checkWinner());
     }
     togglePlayer();
-    // Player-Anzeige updaten
-  } else { // falls Feld belegt
-    alert('Feld bereits belegt!');
+    highlightPlayerSymbol();
   }
 }
 
 function checkWinner() {
-  let index = 0;
   if (checkWinnerHorizontal() >= 0) {
-    index = checkWinnerHorizontal()
-    drawWinLine(0, index, 2, index);
+    const row = checkWinnerHorizontal()
+    return [0, row, 2, row];
   } else {
     if (checkWinnerVertical() >= 0) {
-      index = checkWinnerVertical()
-      drawWinLine(index, 0, index, 2);
+      const column = checkWinnerVertical()
+      return [column, 0, column, 2];
     } else {
       if (checkWinnerDiagonalDown()) {
-        drawWinLine(0, 0, 2, 2);
+        return [0, 0, 2, 2];
       } else {
         if (checkWinnerDiagonalUp()) {
-          drawWinLine(0, 2, 2, 0);
+          return [0, 2, 2, 0];
         } else {
-          return false; // Kein Gewinner gefunden
+          return null; // kein Gewinner gefunden
         }
       }
     }
@@ -154,19 +164,32 @@ function togglePlayer() {
   }
 }
 
-function drawWinLine(startRow, startColumn, endRow, endColumn) {
-  const cell00 = document.getElementById('row0column0');
-  cell00.style.position = 'relative';
+function highlightPlayerSymbol() {
+  const circle = document.querySelector('#playerSymbols :nth-child(1)');
+  const cross = document.querySelector('#playerSymbols :nth-child(2)');
+  if (activePlayerSymbol == 'circle') {
+    circle.style.opacity = '1';
+    cross.style.opacity = '0.3';
+  } else {
+    circle.style.opacity = '0.3';
+    cross.style.opacity = '1';
+  }
+}
 
-  const cellSize = 106;
-  const borderWidth = 3;
+function drawWinLine(coordinates) {
+  if (coordinates) {
+    const cell00 = document.getElementById('row0column0');
+    cell00.style.position = 'relative';
 
-  const x1 = cellSize * (0.5 + startRow);
-  const y1 = cellSize * (0.5 + startColumn);
-  const x2 = cellSize * (0.5 + endRow);
-  const y2 = cellSize * (0.5 + endColumn);
+    const cellSize = 106;
 
-  cell00.innerHTML += winLineHtml(x1, y1, x2, y2);
+    const x1 = cellSize * (0.5 + coordinates[0]);
+    const y1 = cellSize * (0.5 + coordinates[1]);
+    const x2 = cellSize * (0.5 + coordinates[2]);
+    const y2 = cellSize * (0.5 + coordinates[3]);
+
+    cell00.innerHTML += winLineHtml(x1, y1, x2, y2);
+  }
 }
 
 function circleHtml() {
