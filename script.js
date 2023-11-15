@@ -56,14 +56,8 @@ function playMove(rowIndex, columnIndex) {
   if (!cell.innerHTML) { // falls Feld frei
     fields[rowIndex][columnIndex] = activePlayerSymbol;
     updateCell(rowIndex, columnIndex);
-    if (checkWinner()) {
-      alert(`Spieler ${activePlayerSymbol} hat gewonnen!`);
-      // Hier kannst du weitere Aktionen nach dem Gewinn durchführen
-      // z.B. das Spiel zurücksetzen oder eine neue Runde starten
-    } else {
-      if(checkGameOver()) {
-        alert('Game over!');
-      };
+    if (!checkWinner()) {
+      checkGameOver();
     }
     togglePlayer();
     // Player-Anzeige updaten
@@ -73,44 +67,54 @@ function playMove(rowIndex, columnIndex) {
 }
 
 function checkWinner() {
-  if (
-    checkWinnerHorizontal() ||
-    checkWinnerVertical() ||
-    checkWinnerDiagonal()
-  ) {
-    return true;
+  let index = 0;
+  if (checkWinnerHorizontal() >= 0) {
+    index = checkWinnerHorizontal()
+    drawWinLine(0, index, 2, index);
   } else {
-    return false; // Kein Gewinner gefunden
+    if (checkWinnerVertical() >= 0) {
+      index = checkWinnerVertical()
+      drawWinLine(index, 0, index, 2);
+    } else {
+      if (checkWinnerDiagonalDown()) {
+        drawWinLine(0, 0, 2, 2);
+      } else {
+        if (checkWinnerDiagonalUp()) {
+          drawWinLine(0, 2, 2, 0);
+        } else {
+          return false; // Kein Gewinner gefunden
+        }
+      }
+    }
   }
 }
 
+
 function checkWinnerHorizontal() {
-  // Überprüfe horizontale Reihen
   for (let i = 0; i < 3; i++) {
     if (
-      fields[0][i] !== null &&
+      fields[i][0] !== null &&
       fields[i][0] === fields[i][1] &&
       fields[i][1] === fields[i][2]
     ) {
-      return true; // Gewinner gefunden
+      return i;
     }
   }
 }
 
 function checkWinnerVertical() {
-  // Überprüfe vertikale Reihen
   for (let i = 0; i < 3; i++) {
     if (
       fields[0][i] !== null &&
       fields[0][i] === fields[1][i] &&
       fields[1][i] === fields[2][i]
     ) {
-      return true; // Gewinner gefunden
+      return i;
     }
   }
 }
 
-function checkWinnerDiagonal() {
+function checkWinnerDiagonalDown() {
   // Überprüfe diagonale Reihen
   if (
     fields[0][0] !== null &&
@@ -119,7 +123,9 @@ function checkWinnerDiagonal() {
   ) {
     return true; // Gewinner gefunden
   }
+}
 
+function checkWinnerDiagonalUp() {
   if (
     fields[0][2] !== null &&
     fields[0][2] === fields[1][1] &&
@@ -148,6 +154,21 @@ function togglePlayer() {
   }
 }
 
+function drawWinLine(startRow, startColumn, endRow, endColumn) {
+  const cell00 = document.getElementById('row0column0');
+  cell00.style.position = 'relative';
+
+  const cellSize = 106;
+  const borderWidth = 3;
+
+  const x1 = cellSize * (0.5 + startRow);
+  const y1 = cellSize * (0.5 + startColumn);
+  const x2 = cellSize * (0.5 + endRow);
+  const y2 = cellSize * (0.5 + endColumn);
+
+  cell00.innerHTML += winLineHtml(x1, y1, x2, y2);
+}
+
 function circleHtml() {
   return /* html */ '<svg width="100" height="100">' +
     '<circle cx="50" cy="50" r="22" stroke="lightblue" stroke-width="8" fill="none">' +
@@ -171,4 +192,15 @@ function crossHtml() {
 
 function animateSpeedHtml() {
   return /* html */ 'dur="125ms" begin="0s" fill="freeze"';
+}
+
+function winLineHtml(x1, y1, x2, y2) {
+  return /* html */ `
+    <svg id="winLine">
+      <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="white" stroke-width="8">
+      <animate attributeName="x2" from="${x1}" to="${x2}" dur="0.5s" begin="0s" fill="freeze" />
+      <animate attributeName="y2" from="${y1}" to="${y2}" dur="0.5s" begin="0s" fill="freeze" />
+      </line>
+    </svg>
+  `;
 }

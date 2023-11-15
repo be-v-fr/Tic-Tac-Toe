@@ -24,6 +24,10 @@ table {
     border: none;
 }
 
+#gameTable {
+    position: relative;
+}
+
 td {
     width: 106px;
     height: 106px;
@@ -51,4 +55,12 @@ tr:last-child td {
 
 svg {
     display: inline-block;
+}
+
+#winLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 324px;
+    height: 324px;
 }
